@@ -1,0 +1,36 @@
+ENTRE CORAÇÕES — VERSÃO COM CHECKOUT PRO E RELATÓRIO PREMIUM
+
+O QUE FOI PREPARADO
+- O quiz e o resultado gratuito continuam funcionando.
+- O botão de R$ 14,90 solicita a criação de uma order no Checkout Pro do Mercado Pago.
+- O Access Token fica somente no backend Netlify Functions, nunca no navegador.
+- Ao retornar do checkout, o site consulta a order diretamente na API do Mercado Pago.
+- O relatório premium só aparece quando a API confirma status processed/accredited, moeda BRL e valor pago mínimo de R$ 14,90.
+- Se o pagamento ainda estiver pendente, o usuário pode tentar verificar novamente.
+
+ESTRUTURA
+- index.html: site e fluxo de checkout.
+- netlify/functions/create-checkout.mjs: cria uma order de R$ 14,90.
+- netlify/functions/payment-status.mjs: consulta e valida o pagamento.
+- netlify.toml: configura a pasta de publicação e funções.
+
+IMPORTANTE ANTES DE PUBLICAR
+1. O projeto atual foi enviado pelo Netlify Drop. Para publicar e executar as Netlify Functions, publique este projeto com suporte a funções: conectando um repositório Git ao Netlify ou usando o Netlify CLI. Não basta enviar somente o index.html.
+2. O projeto já usa a variável de ambiente MERCADOPAGO_ACCESS_TOKEN. Mantenha-a como secreta e disponível para Functions.
+3. Use credenciais de teste para os primeiros testes. Nunca coloque Access Token no HTML, no JavaScript do navegador, em mensagens ou no GitHub.
+4. As credenciais que foram compartilhadas em conversa devem ser revogadas/rotacionadas no painel Mercado Pago antes de qualquer uso.
+5. O retorno do checkout é verificado consultando a API. Para produção, ainda é necessário configurar e validar Webhooks de orders_v2, testar pagamentos aprovados/pendentes/rejeitados e trocar para credenciais de produção somente depois de todos os testes.
+6. Não divulgue nem venda até concluir os testes de ponta a ponta. O código foi verificado sintaticamente, mas não foi possível executar uma transação real/sandbox sem acesso às credenciais no ambiente.
+
+PUBLICAÇÃO RECOMENDADA
+- Extraia este ZIP mantendo a pasta netlify/functions e o arquivo netlify.toml na raiz.
+- Importe a pasta/repositório no Netlify com deploy conectado ao Git, ou publique com Netlify CLI.
+- Depois do deploy, confirme que existem as funções create-checkout e payment-status em Netlify > Functions.
+- Faça primeiro um teste completo com usuário e meio de pagamento de teste do Mercado Pago.
+
+DOCUMENTAÇÃO OFICIAL
+Checkout Pro Orders: https://www.mercadopago.com.br/developers/pt/docs/checkout-pro-orders/create-order
+Consulta de order: https://www.mercadopago.com.br/developers/pt/reference/online-payments/checkout-pro-orders/get-order/get
+Status da order: https://www.mercadopago.com.br/developers/pt/docs/checkout-api-orders/payment-management/status/order-status
+Webhooks: https://www.mercadopago.com.br/developers/pt/docs/checkout-pro-orders/notifications
+Netlify Functions: https://docs.netlify.com/build/functions/overview/

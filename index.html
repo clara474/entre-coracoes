@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1b0929">
+<title>Entre Corações | Quiz de Relacionamento</title>
+<meta name="description" content="Responda ao quiz Entre Corações e receba uma reflexão personalizada sobre seus sentimentos, desejos e expectativas nos relacionamentos.">
+<meta name="application-name" content="Entre Corações">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Entre Corações">
+<meta property="og:title" content="Entre Corações | Quiz de Relacionamento">
+<meta property="og:description" content="Um momento para olhar para si: faça nosso quiz gratuito sobre amor e relacionamentos.">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Entre Corações | Quiz de Relacionamento">
+<meta name="twitter:description" content="Faça o quiz e receba uma reflexão personalizada.">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="manifest" href="/site.webmanifest">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Entre Corações",
+  "alternateName": "Entre Corações - Quiz de Relacionamento",
+  "description": "Quizzes de entretenimento e autoconhecimento sobre amor e relacionamentos.",
+  "inLanguage": "pt-BR"
+}
+</script>
+<style>
+:root{--bg:#170821;--panel:#281237;--gold:#f2cf65;--gold2:#ffe79a;--muted:#c9b8d2;--white:#fffafc}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at top,#48205b 0%,#210d31 42%,#12051b 100%);color:var(--white);font-family:Arial,Helvetica,sans-serif;min-height:100vh}
+main{width:min(100% - 28px,680px);margin:32px auto 48px}
+.brand{text-align:center;color:var(--gold);font-size:13px;letter-spacing:3px;text-transform:uppercase;margin:12px 0 22px}
+.card{background:rgba(40,18,55,.94);border:1px solid rgba(242,207,101,.25);border-radius:24px;padding:24px;box-shadow:0 18px 55px #09020e88}
+.hero{text-align:center}
+.eyebrow{color:var(--gold);font-size:12px;letter-spacing:2px;text-transform:uppercase}
+h1{font-family:Georgia,serif;font-size:clamp(30px,7vw,46px);line-height:1.1;margin:12px 0;color:var(--gold2)}
+h2{font-family:Georgia,serif;font-size:27px;color:var(--gold2);margin:8px 0 14px}
+p{color:var(--muted);line-height:1.6}
+.hero-art{height:170px;border-radius:18px;margin:20px 0;background:linear-gradient(135deg,#3d174c,#170821);display:flex;align-items:center;justify-content:center;font-size:68px;border:1px solid #ffffff16}
+.btn{display:block;width:100%;border:0;border-radius:15px;padding:17px 18px;background:linear-gradient(110deg,var(--gold),var(--gold2));color:#24122d;font-weight:800;font-size:17px;cursor:pointer;margin-top:18px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.secondary{background:transparent;border:1px solid #b89ac8;color:var(--white)}
+.progress-wrap{height:8px;background:#4a3557;border-radius:20px;overflow:hidden;margin:12px 0 24px}
+.progress{height:100%;width:0;background:linear-gradient(90deg,#d9ad42,#ffe99a);transition:width .25s}
+.topline{display:flex;justify-content:space-between;color:var(--muted);font-size:13px}
+.question{font-family:Georgia,serif;font-size:25px;line-height:1.25;margin:20px 0}
+.options{display:grid;gap:10px}
+.option{padding:15px;border-radius:13px;border:1px solid #775c86;background:#321b40;color:var(--white);text-align:left;font-size:15px;cursor:pointer}
+.option.selected{border-color:var(--gold);background:#4a2c50;box-shadow:0 0 0 1px var(--gold) inset}
+.result-icon{font-size:52px;text-align:center;margin:8px}
+.result-box{background:#351d43;border:1px solid #886c93;border-radius:16px;padding:18px;margin:18px 0}
+.small{font-size:12px;color:#aa96b5;text-align:center;margin-top:18px}
+.hidden{display:none!important}
+.pill{display:inline-block;border:1px solid #9c7eaa;border-radius:30px;padding:7px 12px;color:var(--gold2);font-size:12px}
+footer{text-align:center;color:#927e9d;font-size:12px;line-height:1.6;padding:18px}
+a{color:var(--gold2)}
+@media(max-width:420px){.card{padding:19px}.hero-art{height:135px}}
+</style>
+</head>
+<body>
+<main>
+  <div class="brand">✦ Entre Corações ✦</div>
+  <section id="welcome" class="card hero">
+    <div class="eyebrow">Um momento para olhar para si</div>
+    <h1>O que seu coração está buscando?</h1>
+    <p>Responda a 4 perguntas sobre sua vida amorosa e receba uma reflexão personalizada sobre seus sentimentos, desejos e expectativas.</p>
+    <div class="hero-art" aria-hidden="true">♡ ✨ ♡</div>
+    <span class="pill">4 perguntas · gratuito · cerca de 2 minutos</span>
+    <button class="btn" id="start">Começar meu quiz</button>
+    <p class="small">Este quiz é uma experiência de entretenimento e autoconhecimento. Não revela nem determina o que outra pessoa sente.</p>
+  </section>
+
+  <section id="quiz" class="card hidden">
+    <div class="topline"><span id="stepLabel">Pergunta 1 de 4</span><span id="percent">25%</span></div>
+    <div class="progress-wrap"><div id="progress" class="progress"></div></div>
+    <div class="eyebrow">Sua jornada</div>
+    <div id="question" class="question"></div>
+    <div id="options" class="options"></div>
+    <button id="next" class="btn" disabled>Continuar</button>
+    <button id="back" class="btn secondary">Voltar</button>
+  </section>
+
+  <section id="result" class="card hidden">
+    <div class="eyebrow" style="text-align:center">Sua reflexão personalizada</div>
+    <div class="result-icon">💗</div>
+    <h2 id="resultTitle" style="text-align:center"></h2>
+    <p id="resultText"></p>
+    <div class="result-box">
+      <strong style="color:var(--gold2)">Uma pergunta para levar com você</strong>
+      <p id="reflection" style="margin-bottom:0"></p>
+    </div>
+    <p>Esta é uma leitura simbólica baseada nas respostas que você escolheu — não uma previsão nem uma confirmação sobre os sentimentos de outra pessoa.</p>
+    <button class="btn" id="premium">Desbloquear relatório completo — R$ 14,90</button>
+    <div id="premiumReport" class="result-box hidden" aria-live="polite">
+      <strong style="color:var(--gold2)">Seu relatório completo</strong>
+      <div id="premiumReportContent"></div>
+    </div>
+    <p id="premiumStatus" class="small" aria-live="polite">O relatório completo será liberado após a confirmação do pagamento.</p>
+    <button class="btn secondary hidden" id="verifyPayment">Verificar pagamento</button>
+    <button class="btn secondary" id="restart">Refazer o quiz</button>
+  </section>
+
+  <section id="checkout" class="card hidden">
+    <div class="result-icon">✨</div>
+    <h2 style="text-align:center">Relatório premium</h2>
+    <p>Você será direcionado(a) ao ambiente seguro do Mercado Pago para realizar o pagamento de R$ 14,90.</p>
+    <div class="result-box">
+      <strong style="color:var(--gold2)">Pagamento protegido</strong>
+      <p style="margin-bottom:0">O relatório só será liberado depois que o servidor confirmar a aprovação do pagamento diretamente com o Mercado Pago.</p>
+    </div>
+    <button class="btn" id="payNow">Continuar para o Mercado Pago — R$ 14,90</button>
+    <p id="checkoutMessage" class="small" aria-live="polite"></p>
+    <button class="btn secondary" id="returnResult">Voltar ao resultado</button>
+  </section>
+  <footer>Entre Corações · Conteúdo de entretenimento e autoconhecimento.<br>Não substitui aconselhamento profissional. Respostas não são usadas para identificar você.</footer>
+</main>
+<script>
+const questions=[
+ {q:"Quando você pensa na sua vida amorosa hoje, o que mais deseja?",a:["Construir uma relação estável e recíproca","Entender melhor o que estou sentindo","Recomeçar e deixar o passado para trás","Viver algo leve, sem pressa"]},
+ {q:"O que mais faz você se sentir valorizado(a)?",a:["Atitudes consistentes no dia a dia","Conversas sinceras e profundas","Carinho e demonstrações de afeto","Respeito pelo meu espaço e meu tempo"]},
+ {q:"Quando surge uma dúvida no relacionamento, você costuma…",a:["Conversar com clareza","Pensar bastante antes de falar","Observar atitudes e esperar o momento certo","Precisar de um tempo para organizar as ideias"]},
+ {q:"Qual frase combina mais com o momento que você está vivendo?",a:["Quero reciprocidade, não incerteza","Estou aprendendo a me escolher","Tenho esperança, mas quero ir com calma","Estou aberto(a) a novas possibilidades"]}
+];
+let current=0, answers=[];
+const $=id=>document.getElementById(id);
+const ORDER_KEY='ec_mp_order_id';
+const ANSWERS_KEY='ec_quiz_answers';
+function show(id){["welcome","quiz","result","checkout"].forEach(x=>$(x).classList.toggle("hidden",x!==id))}
+function render(){
+ const q=questions[current]; $("stepLabel").textContent=`Pergunta ${current+1} de ${questions.length}`;
+ $("percent").textContent=`${Math.round((current+1)/questions.length*100)}%`;
+ $("progress").style.width=`${(current+1)/questions.length*100}%`;
+ $("question").textContent=q.q; $("options").innerHTML="";
+ q.a.forEach((v,i)=>{const b=document.createElement("button");b.className="option"+(answers[current]===i?" selected":"");b.textContent=v;b.onclick=()=>{answers[current]=i;renderOptions()};$("options").appendChild(b)});
+ $("next").textContent=current===questions.length-1?"Ver meu resultado":"Continuar";
+ $("next").disabled=answers[current]===undefined;
+ $("back").style.visibility=current===0?"hidden":"visible";
+}
+function renderOptions(){[...$("options").children].forEach((b,i)=>b.classList.toggle("selected",answers[current]===i));$("next").disabled=answers[current]===undefined}
+function finish(){
+ const counts=[0,0,0,0];answers.forEach(a=>counts[a]++);
+ const strongest=counts.indexOf(Math.max(...counts));
+ const data=[
+  ["Você busca segurança emocional","Suas escolhas indicam que confiança, constância e reciprocidade têm um papel importante para você. Vale observar se suas relações acompanham esses valores em atitudes, não apenas em palavras.","Que atitudes concretas fazem você se sentir seguro(a) em uma relação?"],
+  ["Você está em uma fase de autoconhecimento","Suas respostas apontam para um momento de escuta interior. Dar nome ao que sente e reconhecer seus limites pode ajudar a fazer escolhas mais alinhadas com o que deseja.","O que você precisa reconhecer em si antes de tomar sua próxima decisão afetiva?"],
+  ["Você valoriza cuidado e comunicação","Você parece dar importância à troca, ao diálogo e à forma como o carinho aparece no cotidiano. Relações saudáveis permitem falar com honestidade e ouvir com respeito.","Você tem conseguido expressar suas necessidades com clareza?"],
+  ["Você quer leveza e novos caminhos","Suas escolhas sugerem abertura para possibilidades, sem deixar de respeitar seu próprio ritmo. Não é preciso apressar decisões para viver algo significativo.","Que tipo de experiência combina com a fase que você está vivendo agora?"]
+ ];
+ $("resultTitle").textContent=data[strongest][0];$("resultText").textContent=data[strongest][1];$("reflection").textContent=data[strongest][2];
+ localStorage.setItem(ANSWERS_KEY,JSON.stringify(answers));
+ show("result");
+}
+
+function buildPremiumReport(){
+ const counts=[0,0,0,0];answers.forEach(a=>{if(Number.isInteger(a)&&a>=0&&a<4)counts[a]++});
+ const strongest=counts.indexOf(Math.max(...counts));
+ const profiles=[
+  {intro:'Suas respostas mostram uma busca importante por estabilidade, confiança e atitudes coerentes. Para você, a qualidade de uma relação aparece principalmente na constância e na sensação de poder contar com o outro.',strength:'Você tende a valorizar compromisso, clareza e presença. Isso pode ajudar a reconhecer relações em que existe cuidado real, não apenas promessas.',attention:'O desejo de segurança não precisa significar aceitar menos do que merece para evitar ficar só. Observe se existe equilíbrio entre o que você oferece e o que recebe.',steps:['Defina quais atitudes são indispensáveis para você.','Converse sobre expectativas sem tentar adivinhar o que a outra pessoa pensa.','Observe padrões de comportamento ao longo do tempo, não apenas momentos isolados.'],question:'Que atitude concreta, repetida no dia a dia, faria você sentir que existe reciprocidade?'},
+  {intro:'Suas respostas apontam para uma fase de escuta interior. Antes de buscar uma resposta fora, pode ser útil entender o que você sente, o que deseja e quais limites são importantes neste momento.',strength:'Você demonstra disposição para refletir e rever caminhos. Essa pausa pode ajudar a tomar decisões mais alinhadas com seus valores.',attention:'Pensar demais pode transformar dúvidas em um ciclo. Nem toda decisão precisa estar perfeita para que você dê um próximo passo cuidadoso.',steps:['Escreva o que sente sem julgar suas emoções.','Separe fatos observáveis de suposições ou medos.','Escolha um pequeno limite ou atitude que respeite suas necessidades.'],question:'O que você já sabe sobre suas necessidades, mesmo que ainda não saiba qual decisão tomar?'},
+  {intro:'Suas escolhas sugerem que carinho, diálogo e troca têm bastante importância para você. Sentir-se valorizado pode estar ligado à liberdade de falar com sinceridade e receber atenção respeitosa.',strength:'Você parece reconhecer o valor da conexão e da expressão emocional. Isso pode favorecer conversas mais honestas e vínculos mais próximos.',attention:'É importante que a comunicação seja uma via de mão dupla. Você não precisa carregar sozinho(a) a responsabilidade de manter a conexão.',steps:['Expresse um desejo de forma direta e gentil.','Pergunte e escute sem tentar antecipar a resposta.','Repare se a outra pessoa também demonstra iniciativa e consideração.'],question:'Você consegue falar sobre o que precisa e também sente abertura para ser ouvido(a)?'},
+  {intro:'Suas respostas indicam vontade de respeitar seu próprio ritmo e manter espaço para novas possibilidades. Uma experiência significativa não precisa ser apressada para ter valor.',strength:'Você pode estar aberto(a) a aprender com experiências diferentes e a construir vínculos sem perder sua individualidade.',attention:'Leveza não deve significar falta de clareza. Mesmo sem pressa, é válido conversar sobre intenções e limites para evitar expectativas desencontradas.',steps:['Respeite seu ritmo sem se comparar com outras pessoas.','Comunique o que está buscando neste momento.','Mantenha atividades, amizades e interesses que também fazem parte da sua vida.'],question:'Como seria viver uma relação que respeitasse seu tempo e, ao mesmo tempo, fosse clara nas intenções?'}
+ ];
+ const p=profiles[strongest],root=$('premiumReportContent');root.replaceChildren();
+ const add=(label,content)=>{const el=document.createElement('p');const strong=document.createElement('strong');strong.style.color='var(--gold2)';strong.textContent=label;el.appendChild(strong);el.appendChild(document.createElement('br'));el.appendChild(document.createTextNode(content));root.appendChild(el)};
+ add('Leitura principal',p.intro);add('Um ponto forte',p.strength);add('Um cuidado importante',p.attention);
+ const heading=document.createElement('p'),bold=document.createElement('strong');bold.style.color='var(--gold2)';bold.textContent='Três passos práticos';heading.appendChild(bold);root.appendChild(heading);
+ const ul=document.createElement('ul');p.steps.forEach(t=>{const li=document.createElement('li');li.style.color='var(--muted)';li.style.lineHeight='1.6';li.textContent=t;ul.appendChild(li)});root.appendChild(ul);add('Para refletir',p.question);
+ const note=document.createElement('p');note.className='small';note.textContent='Esta leitura é simbólica e baseada nas respostas escolhidas. Não é diagnóstico, previsão nem confirmação sobre os sentimentos de outra pessoa.';root.appendChild(note);
+ $('premiumReport').classList.remove('hidden');$('premium').classList.add('hidden');$('premiumStatus').textContent='Pagamento aprovado. Seu relatório completo está liberado.';$('verifyPayment').classList.add('hidden');
+}
+async function beginPayment(){
+ const button=$('payNow');button.disabled=true;$('checkoutMessage').textContent='Criando seu pagamento seguro…';
+ try{const response=await fetch('/.netlify/functions/create-checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({})});const data=await response.json();if(!response.ok||!data.checkoutUrl||!data.orderId)throw new Error(data.error||'Não foi possível iniciar o pagamento.');localStorage.setItem(ORDER_KEY,data.orderId);window.location.href=data.checkoutUrl;}
+ catch(error){$('checkoutMessage').textContent=error.message||'Erro ao iniciar pagamento. Tente novamente.';button.disabled=false;}
+}
+async function checkPayment(){
+ const orderId=localStorage.getItem(ORDER_KEY);if(!orderId){$('premiumStatus').textContent='Não encontramos um pagamento iniciado neste navegador. Volte e inicie o checkout novamente.';return;}
+ $('premiumStatus').textContent='Conferindo a confirmação com o Mercado Pago…';
+ try{const response=await fetch('/.netlify/functions/payment-status?order_id='+encodeURIComponent(orderId),{cache:'no-store'});const data=await response.json();if(!response.ok)throw new Error(data.error||'Não foi possível consultar o pagamento.');if(data.approved){buildPremiumReport();history.replaceState({},document.title,location.pathname);}else{$('premiumStatus').textContent='Ainda não recebemos a confirmação do pagamento. Se você acabou de pagar, aguarde um pouco e toque em “Verificar pagamento”.';$('verifyPayment').classList.remove('hidden');}}
+ catch(error){$('premiumStatus').textContent=error.message||'Erro ao verificar pagamento. Tente novamente.';$('verifyPayment').classList.remove('hidden');}
+}
+
+$("start").onclick=()=>{current=0;answers=[];show("quiz");render()};
+$("next").onclick=()=>{if(answers[current]===undefined)return;if(current<questions.length-1){current++;render()}else finish()};
+$("back").onclick=()=>{if(current>0){current--;render()}};
+$("premium").onclick=()=>show("checkout");
+$("returnResult").onclick=()=>show("result");
+$("restart").onclick=()=>{current=0;answers=[];localStorage.removeItem(ANSWERS_KEY);localStorage.removeItem(ORDER_KEY);$("premiumReport").classList.add("hidden");$("premium").classList.remove("hidden");$("verifyPayment").classList.add("hidden");$("premiumStatus").textContent="O relatório completo será liberado após a confirmação do pagamento.";show("welcome")};
+$("payNow").onclick=beginPayment;
+$("verifyPayment").onclick=checkPayment;
+(function restorePaymentReturn(){const params=new URLSearchParams(location.search);if(params.get("payment")==="return"){try{const saved=JSON.parse(localStorage.getItem(ANSWERS_KEY)||"[]");if(Array.isArray(saved)&&saved.length===4){answers=saved;finish();checkPayment();}}catch(error){console.error("Não foi possível restaurar o quiz",error)}}})();
+</script>
+</body>
+</html>
