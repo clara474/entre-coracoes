@@ -3,7 +3,10 @@ export default async (request) => {
   if (request.method !== "GET") {
     return new Response(
       JSON.stringify({ error: "Método não permitido." }),
-      { status: 405, headers: { "Content-Type": "application/json" } }
+      {
+        status: 405,
+        headers: { "Content-Type": "application/json" }
+      }
     );
   }
 
@@ -17,7 +20,10 @@ export default async (request) => {
   ) {
     return new Response(
       JSON.stringify({ error: "Dados inválidos." }),
-      { status: 400, headers: { "Content-Type": "application/json" } }
+      {
+        status: 400,
+        headers: { "Content-Type": "application/json" }
+      }
     );
   }
 
@@ -36,50 +42,62 @@ export default async (request) => {
 
     const data = await response.json();
 
-    if (!response.ok) {
+    if (!response.ok || data.id !== orderId) {
       return new Response(
-        JSON.stringify({ error: "Não foi possível consultar o pagamento." }),
-        { status: 502, headers: { "Content-Type": "application/json" } }
+        JSON.stringify({
+          error: "Não foi possível consultar o pagamento."
+        }),
+        {
+          status: 502,
+          headers: { "Content-Type": "application/json" }
+        }
       );
     }
 
     const payments = data.transactions?.payments || [];
 
-    const pixApproved = payments.some((payment) =>
-      payment.status === "processed" &&
-      payment.status_detail === "accredited" &&
-      payment.payment_method?.id === "pix" &&
-      payment.payment_method?.type === "bank_transfer" &&
-      Number(payment.paid_amount ?? payment.amount) >= 14.90
-    );
+    const approvedPix = payments.some((payment) => {
+      return (
+        payment.status === "processed" &&
+        payment.status_detail === "accredited" &&
+        payment.payment_method?.id === "pix" &&
+        payment.payment_method?.type === "bank_transfer" &&
+        Number(payment.paid_amount ?? payment.amount) >= 14.90
+      );
+    });
 
     const approved =
       data.id === orderId &&
       data.type === "online" &&
       data.processing_mode === "automatic" &&
-      data.status === "processed" &&
-      data.status_detail === "accredited" &&
       data.currency === "BRL" &&
       Number(data.total_amount) >= 14.90 &&
-      Number(data.total_paid_amount) >= 14.90 &&
       String(data.external_reference || "").startsWith("EC-") &&
-      pixApproved;
+      approvedPix;
 
     return new Response(
       JSON.stringify({
         approved,
-        status: data.status || "unknown"
+        status: approved ? "approved" : data.status || "pending"
       }),
       {
         status: 200,
-        headers: { "Content-Type": "application/json" }
+        headers: {
+          "Content-Type": "application/json",
+          "Cache-Control": "no-store"
+        }
       }
     );
 
   } catch {
     return new Response(
-      JSON.stringify({ error: "Erro ao consultar o Mercado Pago." }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
+      JSON.stringify({
+        error: "Erro ao consultar o pagamento."
+      }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" }
+      }
     );
   }
 };
