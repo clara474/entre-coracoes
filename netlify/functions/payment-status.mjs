@@ -43,16 +43,27 @@ export default async (request) => {
       );
     }
 
+    const payments = data.transactions?.payments || [];
+
+    const pixApproved = payments.some((payment) =>
+      payment.status === "processed" &&
+      payment.status_detail === "accredited" &&
+      payment.payment_method?.id === "pix" &&
+      payment.payment_method?.type === "bank_transfer" &&
+      Number(payment.paid_amount ?? payment.amount) >= 14.90
+    );
+
     const approved =
       data.id === orderId &&
       data.type === "online" &&
-      data.processing_mode === "manual" &&
+      data.processing_mode === "automatic" &&
       data.status === "processed" &&
       data.status_detail === "accredited" &&
       data.currency === "BRL" &&
       Number(data.total_amount) >= 14.90 &&
       Number(data.total_paid_amount) >= 14.90 &&
-      String(data.external_reference || "").startsWith("EC-");
+      String(data.external_reference || "").startsWith("EC-") &&
+      pixApproved;
 
     return new Response(
       JSON.stringify({
