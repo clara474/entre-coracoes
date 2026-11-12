@@ -10,7 +10,11 @@ export default async (request) => {
   const accessToken = process.env.MERCADOPAGO_ACCESS_TOKEN;
   const orderId = new URL(request.url).searchParams.get("order_id");
 
-  if (!accessToken || !orderId || !/^[a-zA-Z0-9_-]+$/.test(orderId)) {
+  if (
+    !accessToken ||
+    !orderId ||
+    !/^ORD[A-Za-z0-9]+$/.test(orderId)
+  ) {
     return new Response(
       JSON.stringify({ error: "Dados inválidos." }),
       { status: 400, headers: { "Content-Type": "application/json" } }
@@ -23,8 +27,10 @@ export default async (request) => {
       {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${accessToken}`
-        }
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json"
+        },
+        cache: "no-store"
       }
     );
 
@@ -38,10 +44,14 @@ export default async (request) => {
     }
 
     const approved =
+      data.id === orderId &&
+      data.type === "online" &&
+      data.processing_mode === "manual" &&
       data.status === "processed" &&
       data.status_detail === "accredited" &&
       data.currency === "BRL" &&
       Number(data.total_amount) >= 14.90 &&
+      Number(data.total_paid_amount) >= 14.90 &&
       String(data.external_reference || "").startsWith("EC-");
 
     return new Response(
@@ -49,7 +59,10 @@ export default async (request) => {
         approved,
         status: data.status || "unknown"
       }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      {
+        status: 200,
+        headers: { "Content-Type": "application/json" }
+      }
     );
 
   } catch {
