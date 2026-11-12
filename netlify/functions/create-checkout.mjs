@@ -1,6 +1,8 @@
 
 import { randomUUID } from "node:crypto";
 
+const SITE_URL = "https://stellar-kitten-3e3659.netlify.app";
+
 export default async (request) => {
   if (request.method !== "POST") {
     return new Response(
@@ -42,14 +44,22 @@ export default async (request) => {
               quantity: 1,
               unit_price: "14.90"
             }
-          ]
+          ],
+          config: {
+            online: {
+              success_url: `${SITE_URL}/?payment=return`,
+              failure_url: `${SITE_URL}/?payment=return`,
+              pending_url: `${SITE_URL}/?payment=return`,
+              auto_return: "approved"
+            }
+          }
         })
       }
     );
 
     const data = await response.json();
 
-    if (!response.ok || !data.checkout_url) {
+    if (!response.ok || !data.checkout_url || !data.id) {
       return new Response(
         JSON.stringify({ error: "Não foi possível criar o pagamento." }),
         { status: 502, headers: { "Content-Type": "application/json" } }
