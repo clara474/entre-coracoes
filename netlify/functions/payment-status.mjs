@@ -62,7 +62,7 @@ export default async (request) => {
         payment.status_detail === "accredited" &&
         payment.payment_method?.id === "pix" &&
         payment.payment_method?.type === "bank_transfer" &&
-        Number(payment.paid_amount ?? payment.amount) >= 14.90
+        Number(payment.amount) === 50
       );
     });
 
@@ -70,9 +70,11 @@ export default async (request) => {
       data.id === orderId &&
       data.type === "online" &&
       data.processing_mode === "automatic" &&
-      data.currency === "BRL" &&
-      Number(data.total_amount) >= 14.90 &&
-      String(data.external_reference || "").startsWith("EC-") &&
+      data.country_code === "BRA" &&
+      data.status === "processed" &&
+      data.status_detail === "accredited" &&
+      Number(data.total_amount) === 50 &&
+      String(data.external_reference || "").startsWith("EC-TEST-") &&
       approvedPix;
 
     return new Response(
@@ -92,11 +94,13 @@ export default async (request) => {
   } catch {
     return new Response(
       JSON.stringify({
-        error: "Erro ao consultar o pagamento."
+        error: "Erro ao consultar o Mercado Pago."
       }),
       {
         status: 500,
-        headers: { "Content-Type": "application/json" }
+        headers: {
+          "Content-Type": "application/json"
+        }
       }
     );
   }
