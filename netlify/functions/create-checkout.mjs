@@ -1,8 +1,6 @@
 
 import { randomUUID } from "node:crypto";
 
-const SITE_URL = "https://stellar-kitten-3e3659.netlify.app";
-
 export default async (request) => {
   if (request.method !== "POST") {
     return new Response(
@@ -34,24 +32,22 @@ export default async (request) => {
         },
         body: JSON.stringify({
           type: "online",
-          processing_mode: "manual",
           total_amount: "14.90",
           external_reference: orderReference,
-          description: "Relatório Premium Entre Corações",
-          items: [
-            {
-              title: "Relatório Premium Entre Corações",
-              quantity: 1,
-              unit_price: "14.90"
-            }
-          ],
-          config: {
-            online: {
-              success_url: `${SITE_URL}/?payment=return`,
-              failure_url: `${SITE_URL}/?payment=return`,
-              pending_url: `${SITE_URL}/?payment=return`,
-              auto_return: "approved"
-            }
+          processing_mode: "automatic",
+          transactions: {
+            payments: [
+              {
+                amount: "14.90",
+                payment_method: {
+                  id: "pix",
+                  type: "bank_transfer"
+                }
+              }
+            ]
+          },
+          payer: {
+            email: "test_payer@example.com"
           }
         })
       }
@@ -59,19 +55,27 @@ export default async (request) => {
 
     const data = await response.json();
 
-    if (!response.ok || !data.checkout_url || !data.id) {
+    const payment = data.transactions?.payments?.[0];
+    const ticketUrl = payment?.payment_method?.ticket_url;
+
+    if (!response.ok || !data.id || !ticketUrl) {
       return new Response(
-        JSON.stringify({ error: "Não foi possível criar o pagamento." }),
+        JSON.stringify({
+          error: "Não foi possível gerar o Pix. Verifique a integração."
+        }),
         { status: 502, headers: { "Content-Type": "application/json" } }
       );
     }
 
     return new Response(
       JSON.stringify({
-        checkout_url: data.checkout_url,
+        checkout_url: ticketUrl,
         order_id: data.id
       }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      {
+        status: 200,
+        headers: { "Content-Type": "application/json" }
+      }
     );
 
   } catch {
