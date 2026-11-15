@@ -108,7 +108,16 @@ export default async function handler(req, res) {
       }
     );
 
-    const data = await response.json().catch(() => ({}));
+    const responseText = await response.text();
+
+    let data = {};
+
+    try {
+      data = responseText ? JSON.parse(responseText) : {};
+    } catch {
+      data = { responseText };
+    }
+
     const payment = data?.transactions?.payments?.[0];
     const method = payment?.payment_method || {};
 
@@ -119,11 +128,11 @@ export default async function handler(req, res) {
       !method.qr_code ||
       !method.qr_code_base64
     ) {
-      console.error('Mercado Pago error:', response.status, {
-        status: data?.status,
-        cause: data?.cause,
-        message: data?.message
-      });
+      console.error(
+        'Mercado Pago Pix order failed:',
+        response.status,
+        JSON.stringify(data)
+      );
 
       return send(res, 502, {
         error: 'O Mercado Pago não conseguiu gerar o Pix. Consulte os logs do servidor.'
@@ -140,7 +149,10 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error('Create Pix failed:', error?.message || 'unknown error');
+    console.error(
+      'Create Pix failed:',
+      error?.message || 'unknown error'
+    );
 
     return send(res, 502, {
       error: 'Falha de comunicação com o Mercado Pago.'
