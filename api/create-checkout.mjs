@@ -53,13 +53,13 @@ export default async function handler(req, res) {
 
   if (!token) {
     return send(res, 500, {
-      error: 'O Access Token do Mercado Pago não está configurado.'
+      error: 'Access Token não configurado.'
     });
   }
 
   if (!secret || secret.length < 32) {
     return send(res, 500, {
-      error: 'A configuração segura do pagamento está incompleta.'
+      error: 'Configuração segura incompleta.'
     });
   }
 
@@ -69,7 +69,7 @@ export default async function handler(req, res) {
 
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) {
     return send(res, 400, {
-      error: 'Informe um e-mail válido para gerar o Pix.'
+      error: 'Informe um e-mail válido.'
     });
   }
 
@@ -94,15 +94,19 @@ export default async function handler(req, res) {
   };
 
   try {
-    const response = await fetch('https://api.mercadopago.com/v1/orders', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-        Accept: 'application/json'
-      },
-      body: JSON.stringify(payload)
-    });
+    const response = await fetch(
+      'https://api.mercadopago.com/v1/orders',
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+          'X-Idempotency-Key': randomUUID()
+        },
+        body: JSON.stringify(payload)
+      }
+    );
 
     const data = await response.json().catch(() => ({}));
     const payment = data?.transactions?.payments?.[0];
@@ -115,14 +119,14 @@ export default async function handler(req, res) {
       !method.qr_code ||
       !method.qr_code_base64
     ) {
-      console.error('Mercado Pago Pix order failed:', response.status, {
+      console.error('Mercado Pago error:', response.status, {
         status: data?.status,
         cause: data?.cause,
         message: data?.message
       });
 
       return send(res, 502, {
-        error: 'O Mercado Pago não conseguiu gerar um Pix válido. Verifique as credenciais e a habilitação da conta.'
+        error: 'O Mercado Pago não conseguiu gerar o Pix. Consulte os logs do servidor.'
       });
     }
 
@@ -139,7 +143,7 @@ export default async function handler(req, res) {
     console.error('Create Pix failed:', error?.message || 'unknown error');
 
     return send(res, 502, {
-      error: 'Falha de comunicação com o Mercado Pago. Tente novamente.'
+      error: 'Falha de comunicação com o Mercado Pago.'
     });
   }
 }
