@@ -1,0 +1,12 @@
+{
+  "name": "entre-coracoes",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "check": "node --check api/create-checkout.mjs && node --check api/payment-status.mjs"
+  }
+}

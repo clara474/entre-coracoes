@@ -1,10 +1,9 @@
 {
   "name": "Entre Corações",
   "short_name": "Entre Corações",
-  "description": "Quizzes de amor, relacionamentos e autoconhecimento.",
-  "lang": "pt-BR",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#170821",
-  "theme_color": "#1b0929"
+  "theme_color": "#1b0929",
+  "icons": []
 }
